@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Matrix Multiplication Accelerator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-widthl: 1400px;
+            width: 100%;
+            border: 2px solid #ff6b35;
+            min-height: 90vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c2c2c;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(255, 107, 53, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .size-selector {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .size-selector label {
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-right: 10px;
+        }
+
+        .size-selector select {
+            padding: 8px 15px;
+            border: 2px solid #ff6b35;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            color: #2c2c2c;
+            font-weight: 500;
+        }
+
+        .size-selector select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+
+        .matrices-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px;
+        }
+
+        .matrix-section {
+            text-align: center;
+        }
+
+        .matrix-label {
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .matrix {
+            display: grid;
+            gap: 5px;
+            margin: 0 auto;
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 12px;
+            border: 2px solid #ff6b35;
+            min-width: fit-content;
+        }
+
+        .matrix input {
+            width: 45px;
+            height: 45px;
+            text-align: center;
+            border: 2px solid #2c2c2c;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: white;
+            color: #2c2c2c;
+        }
+
+        /* Responsive matrix sizing */
+        .matrix[data-size="2"] input { width: 50px; height: 50px; font-size: 14px; }
+        .matrix[data-size="3"] input { width: 45px; height: 45px; font-size: 13px; }
+        .matrix[data-size="4"] input { width: 40px; height: 40px; font-size: 12px; }
+        .matrix[data-size="5"] input { width: 36px; height: 36px; font-size: 11px; }
+        .matrix[data-size="6"] input { width: 32px; height: 32px; font-size: 10px; }
+        .matrix[data-size="7"] input { width: 30px; height: 30px; font-size: 10px; }
+        .matrix[data-size="8"] input { width: 28px; height: 28px; font-size: 9px; }
+
+        .matrix[data-size="2"] { gap: 8px; max-width: 150px; }
+        .matrix[data-size="3"] { gap: 6px; max-width: 180px; }
+        .matrix[data-size="4"] { gap: 5px; max-width: 220px; }
+        .matrix[data-size="5"] { gap: 4px; max-width: 240px; }
+        .matrix[data-size="6"] { gap: 3px; max-width: 260px; }
+        .matrix[data-size="7"] { gap: 3px; max-width: 280px; }
+        .matrix[data-size="8"] { gap: 2px; max-width: 300px; }
+
+        .matrix input:focus {
+            border-color: #ff6b35;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+            transform: scale(1.05);
+        }
+
+        .operator {
+            font-size: 3em;
+            color: #ff6b35;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 2px 2px 4px rgba(44, 44, 44, 0.3);
+        }
+
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8a5b 100%);
+            color: white;
+            border: 2px solid #2c2c2c;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 8px rgba(44, 44, 44, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(255, 107, 53, 0.4);
+            background: linear-gradient(135deg, #ff8a5b 0%, #ff6b35 100%);
+            border-color: #ff6b35;
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .result-matrix {
+            display: grid;
+            gap: 8px;
+            margin: 20px auto;
+            max-width: 300px;
+        }
+
+        .result-matrix .cell {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            animation: fadeIn 0.5s ease;
+            border: 2px solid #ff6b35;
+            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8) rotate(-5deg); }
+            to { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        .result-section {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .steps-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f8f8;
+            border-radius: 15px;
+            text-align: left;
+            border: 2px solid #2c2c2c;
+        }
+
+        .steps-title {
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .step {
+            margin: 12px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border-left: 5px solid #ff6b35;
+            box-shadow: 0 2px 4px rgba(44, 44, 44, 0.1);
+            color: #2c2c2c;
+            font-weight: 500;
+        }
+
+        .performance-chart {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f8f8;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #2c2c2c;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .chart-label {
+            width: 120px;
+            text-align: right;
+            margin-right: 15px;
+            font-weight: 600;
+            color: #2c2c2c;
+        }
+
+        .chart-value {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8a5b 100%);
+            height: 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            min-width: 60px;
+            box-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
+        }
+
+        .performance-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: 15px;
+            text-align: center;
+            border: 3px solid #ff6b35;
+            box-shadow: 0 6px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #ff6b35;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .spinner {
+            border: 4px solid #2c2c2c;
+            border-top: 4px solid #ff6b35;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 15px auto;
+            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #ffffff;
+            background: #e74c3c;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #2c2c2c;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        }
+
+        .success {
+            color: #ffffff;
+            background: #ff6b35;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #2c2c2c;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                padding: 20px;
+                max-width: 95%;
+            }
+            
+            .matrices-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .operator {
+                transform: rotate(90deg);
+                font-size: 2em;
+                margin: 10px 0;
+            }
+            
+            /* Adjust matrix sizes for smaller screens */
+            .matrix[data-size="5"] input { width: 32px; height: 32px; }
+            .matrix[data-size="6"] input { width: 28px; height: 28px; }
+            .matrix[data-size="7"] input { width: 26px; height: 26px; }
+            .matrix[data-size="8"] input { width: 24px; height: 24px; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .matrix[data-size="6"] input { width: 26px; height: 26px; font-size: 9px; }
+            .matrix[data-size="7"] input { width: 24px; height: 24px; font-size: 8px; }
+            .matrix[data-size="8"] input { width: 22px; height: 22px; font-size: 8px; }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9em;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Matrix Acceleration Engine</h1>
+        <p class="subtitle">Professional Verilog HDL-powered matrix multiplication with scalable processing elements</p>
+
+        <div class="size-selector">
+            <label for="matrixSize">Matrix Size:</label>
+            <select id="matrixSize" onchange="updateMatrixSize()">
+                <option value="2">2×2</option>
+                <option value="3">3×3</option>
+                <option value="4">4×4</option>
+                <option value="5">5×5</option>
+                <option value="6">6×6</option>
+                <option value="7">7×7</option>
+                <option value="8">8×8</option>
+            </select>
+        </div>
+
+        <div class="matrices-container">
+            <div class="matrix-section">
+                <div class="matrix-label">Matrix A</div>
+                <div id="matrixA" class="matrix"></div>
+            </div>
+            
+            <div class="operator">×</div>
+            
+            <div class="matrix-section">
+                <div class="matrix-label">Matrix B</div>
+                <div id="matrixB" class="matrix"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="fillRandom()">🎲 Random Fill</button>
+            <button class="btn" onclick="clearMatrices()">🧹 Clear</button>
+            <button class="btn" onclick="calculateMultiplication()" id="calculateBtn">⚡ Accelerate</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>Processing matrices with Verilog HDL accelerator...</div>
+        </div>
+
+        <div id="result-section" class="result-section" style="display: none;">
+            <h2>Result Matrix C = A × B</h2>
+            <div id="resultMatrix" class="result-matrix"></div>
+            
+            <div id="steps" class="steps-section">
+                <div class="steps-title">📋 Execution Steps</div>
+                <div id="stepsList"></div>
+            </div>
+            
+            <div id="performance-chart" class="performance-chart" style="display: none;">
+                <div class="steps-title">📊 Performance Comparison Chart</div>
+                <div id="chartContainer"></div>
+            </div>
+            
+            <div id="performance" class="performance-info">
+                <div id="performanceDetails"></div>
+            </div>
+        </div>
+
+        <div id="error-message" class="error" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentSize = 2;
+
+        // Remove duplicate updateMatrixSize function
+
+        function createMatrices() {
+            createMatrix('matrixA', currentSize);
+            createMatrix('matrixB', currentSize);
+        }
+
+        function createMatrix(containerId, size) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            container.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+            container.setAttribute('data-size', size);
+
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.value = '0';
+                    input.min = '-999';
+                    input.max = '999';
+                    input.id = `${containerId}_${i}_${j}`;
+                    container.appendChild(input);
+                }
+            }
+        }
+
+        function getMatrixValues(containerId, size) {
+            const matrix = [];
+            for (let i = 0; i < size; i++) {
+                const row = [];
+                for (let j = 0; j < size; j++) {
+                    const value = parseInt(document.getElementById(`${containerId}_${i}_${j}`).value) || 0;
+                    row.push(value);
+                }
+                matrix.push(row);
+            }
+            return matrix;
+        }
+
+        function fillRandom() {
+            for (let i = 0; i < currentSize; i++) {
+                for (let j = 0; j < currentSize; j++) {
+                    // Use smaller random values (0-9) to avoid overflow in larger matrices
+                    const randomValueA = Math.floor(Math.random() * 10); // 0 to 9
+                    const randomValueB = Math.floor(Math.random() * 10); // 0 to 9
+                    document.getElementById(`matrixA_${i}_${j}`).value = randomValueA;
+                    document.getElementById(`matrixB_${i}_${j}`).value = randomValueB;
+                }
+            }
+            hideResult(); // Clear previous results when filling random values
+        }
+
+        function clearMatrices() {
+            for (let i = 0; i < currentSize; i++) {
+                for (let j = 0; j < currentSize; j++) {
+                    document.getElementById(`matrixA_${i}_${j}`).value = '0';
+                    document.getElementById(`matrixB_${i}_${j}`).value = '0';
+                }
+            }
+            hideResult();
+        }
+
+        function hideResult() {
+            document.getElementById('result-section').style.display = 'none';
+            document.getElementById('performance-chart').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('calculateBtn').disabled = show;
+        }
+
+        async function calculateMultiplication() {
+            hideResult();
+            showLoading(true);
+
+            const matrixA = getMatrixValues('matrixA', currentSize);
+            const matrixB = getMatrixValues('matrixB', currentSize);
+
+            try {
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        matrixA: matrixA,
+                        matrixB: matrixB
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Debug logging
+                console.log('Response data:', data);
+                console.log('Performance data:', data.performance);
+
+                if (data.success) {
+                    displayResult(data);
+                } else {
+                    showError(data.error || 'Calculation failed');
+                }
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayResult(data) {
+            // Display result matrix
+            const resultContainer = document.getElementById('resultMatrix');
+            resultContainer.innerHTML = '';
+            resultContainer.style.gridTemplateColumns = `repeat(${currentSize}, 1fr)`;
+
+            data.result.forEach(row => {
+                row.forEach(value => {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.textContent = value;
+                    resultContainer.appendChild(cell);
+                });
+            });
+
+            // Display steps
+            const stepsList = document.getElementById('stepsList');
+            stepsList.innerHTML = '';
+            data.steps.forEach(step => {
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'step';
+                stepDiv.textContent = step;
+                stepsList.appendChild(stepDiv);
+            });
+
+            // Display performance info with CPU comparison
+            const perfDiv = document.getElementById('performanceDetails');
+            const perf = data.performance;
+            console.log('Performance object:', perf);
+            const cpu = perf.cpu_comparison || {
+                naive_cpu_ms: 0,
+                optimized_cpu_ms: 0, 
+                hardware_ms: 0,
+                speedup_vs_naive: 0,
+                speedup_vs_optimized: 0,
+                parallel_efficiency: 'Unknown'
+            };
+            
+            let speedupColor = 'white';
+            let speedupIcon = '⚡';
+            let performanceAnalysis = '';
+            
+            if (cpu.speedup_vs_naive > 1) {
+                speedupColor = '#4CAF50'; // Green for speedup
+                speedupIcon = '🚀';
+                performanceAnalysis = 'Hardware acceleration provides performance gain';
+            } else if (cpu.speedup_vs_naive > 0.1) {
+                speedupColor = '#FF9800'; // Orange for close performance
+                speedupIcon = '⚖️';
+                performanceAnalysis = 'Hardware and CPU performance are comparable';
+            } else {
+                speedupColor = '#3498db'; // Blue for educational/simulation overhead
+                speedupIcon = '🔬';
+                performanceAnalysis = 'Simulation overhead affects small matrices - real hardware would be faster';
+            }
+            
+            perfDiv.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;">
+                    <div>
+                        <strong>⚡ Performance Metrics</strong><br>
+                        Method: ${perf.method}<br>
+                        ${perf.hardware_accelerated ? '🔥 Hardware Accelerated' : '💻 CPU Optimized'}<br>
+                        Matrix Size: ${perf.matrix_size}<br>
+                        Verification: ${data.verification.results_match ? '✅ Passed' : '❌ Failed'}
+                    </div>
+                    <div>
+                        <strong>🏁 CPU Comparison</strong><br>
+                        <div style="font-family: monospace; font-size: 0.9em;">
+                        CPU Naive: ${cpu.naive_cpu_ms.toFixed(4)}ms<br>
+                        CPU Optimized: ${cpu.optimized_cpu_ms.toFixed(4)}ms<br>
+                        <span style="color: ${speedupColor}; font-weight: bold;">
+                        ${perf.hardware_accelerated ? 'Hardware' : 'Selected'}: ${cpu.hardware_ms.toFixed(4)}ms
+                        </span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: rgba(255,107,53,0.1); border-radius: 8px; border-left: 4px solid #ff6b35;">
+                    <strong style="color: ${speedupColor};">${speedupIcon} Performance Analysis</strong><br>
+                    <div style="font-size: 0.9em; margin: 5px 0; color: #555;">
+                        ${performanceAnalysis}
+                    </div>
+                    Speedup vs CPU Naive: <span style="color: ${speedupColor}; font-weight: bold;">${cpu.speedup_vs_naive}x</span><br>
+                    Speedup vs CPU Optimized: <span style="color: ${speedupColor}; font-weight: bold;">${cpu.speedup_vs_optimized}x</span><br>
+                    Architecture: ${cpu.parallel_efficiency}
+                </div>
+            `;
+
+            // Display performance comparison chart
+            displayPerformanceChart(cpu);
+            
+            document.getElementById('result-section').style.display = 'block';
+        }
+
+        function displayPerformanceChart(cpu) {
+            const chartContainer = document.getElementById('chartContainer');
+            const maxTime = Math.max(cpu.naive_cpu_ms, cpu.optimized_cpu_ms, cpu.hardware_ms);
+            
+            // Create chart bars
+            const methods = [
+                { label: 'CPU Naive', time: cpu.naive_cpu_ms, color: '#e74c3c' },
+                { label: 'CPU Optimized', time: cpu.optimized_cpu_ms, color: '#3498db' },
+                { label: 'Hardware/Selected', time: cpu.hardware_ms, color: '#ff6b35' }
+            ];
+            
+            chartContainer.innerHTML = methods.map(method => {
+                const width = Math.max((method.time / maxTime) * 400, 30); // Minimum width for visibility
+                return `
+                    <div class="chart-bar">
+                        <div class="chart-label">${method.label}:</div>
+                        <div class="chart-value" style="width: ${width}px; background: ${method.color};">
+                            ${method.time.toFixed(4)}ms
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('performance-chart').style.display = 'block';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrices();
+            
+            // Add default values based on size
+            fillDefaultValues();
+        });
+        
+        function fillDefaultValues() {
+            if (currentSize === 2) {
+                // 2x2 example: [1,2; 3,4] × [5,6; 7,8] = [19,22; 43,50]
+                document.getElementById('matrixA_0_0').value = '1';
+                document.getElementById('matrixA_0_1').value = '2';
+                document.getElementById('matrixA_1_0').value = '3';
+                document.getElementById('matrixA_1_1').value = '4';
+                
+                document.getElementById('matrixB_0_0').value = '5';
+                document.getElementById('matrixB_0_1').value = '6';
+                document.getElementById('matrixB_1_0').value = '7';
+                document.getElementById('matrixB_1_1').value = '8';
+            } else if (currentSize === 3) {
+                // 3x3 example: Identity × [1,2,3; 4,5,6; 7,8,9] = [1,2,3; 4,5,6; 7,8,9]
+                // Matrix A (Identity)
+                document.getElementById('matrixA_0_0').value = '1';
+                document.getElementById('matrixA_0_1').value = '0';
+                document.getElementById('matrixA_0_2').value = '0';
+                document.getElementById('matrixA_1_0').value = '0';
+                document.getElementById('matrixA_1_1').value = '1';
+                document.getElementById('matrixA_1_2').value = '0';
+                document.getElementById('matrixA_2_0').value = '0';
+                document.getElementById('matrixA_2_1').value = '0';
+                document.getElementById('matrixA_2_2').value = '1';
+                
+                // Matrix B
+                document.getElementById('matrixB_0_0').value = '1';
+                document.getElementById('matrixB_0_1').value = '2';
+                document.getElementById('matrixB_0_2').value = '3';
+                document.getElementById('matrixB_1_0').value = '4';
+                document.getElementById('matrixB_1_1').value = '5';
+                document.getElementById('matrixB_1_2').value = '6';
+                document.getElementById('matrixB_2_0').value = '7';
+                document.getElementById('matrixB_2_1').value = '8';
+                document.getElementById('matrixB_2_2').value = '9';
+            } else {
+                // For larger matrices, use identity and sequential numbers
+                for (let i = 0; i < currentSize; i++) {
+                    for (let j = 0; j < currentSize; j++) {
+                        // Matrix A as identity
+                        document.getElementById(`matrixA_${i}_${j}`).value = i === j ? '1' : '0';
+                        // Matrix B with sequential numbers
+                        document.getElementById(`matrixB_${i}_${j}`).value = (i * currentSize + j + 1).toString();
+                    }
+                }
+            }
+        }
+        
+        function updateMatrixSize() {
+            currentSize = parseInt(document.getElementById('matrixSize').value);
+            createMatrices();
+            fillDefaultValues();  // Fill with default values after size change
+            hideResult();
+        }
+    </script>
+</body>
+</html>
