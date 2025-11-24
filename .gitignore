@@ -1,0 +1,40 @@
+# Compiled Verilog files
+debug_8x8
+debug_sim
+test_flask_8x8
+*.vvp
+*.vcd
+*.out
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# Build artifacts
+build/
+dist/

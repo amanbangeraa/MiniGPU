@@ -1,358 +1,124 @@
-# MiniGPU - Matrix Acceleration Engine# MiniGPU - Matrix Acceleration Engine# MiniGPU - Matrix Acceleration Engine
+# Matrix Acceleration Engine# Matrix Multiplication Accelerator
 
 
 
-A comprehensive hardware-accelerated matrix multiplication system combining Verilog HDL processing elements with a modern web interface and CPU performance comparison.
+A comprehensive hardware-accelerated matrix multiplication system combining Verilog HDL processing elements with a modern web interface.A comprehensive Verilog implementation of a parallel matrix multiplication accelerator using Processing Elements (PEs) with MAC units. The system supports matrix sizes from 2x2 to 8x8 with intelligent scheduling and memory management.
 
 
 
-## FeaturesA comprehensive hardware-accelerated matrix multiplication system combining Verilog HDL processing elements with a modern web interface and CPU performance comparison.A comprehensive hardware-accelerated matrix multiplication system combining Verilog HDL processing elements with a modern web interface and CPU performance comparison.
+## 🚀 Features## Architecture Overview
 
 
 
-- **Hardware Acceleration**: Dedicated Verilog modules for 2x2, 3x3, and 4x4 matrix multiplication
-
-- **Scalable Processing**: Support for matrix sizes from 2x2 to 8x8
-
-- **Intelligent Scheduling**: Automatic routing to optimal processing method## 🚀 Features
-
-- **Modern Web Interface**: Professional UI with responsive design
-
-- **Real-time Computation**: Instant matrix multiplication with verification
-
-- **CPU Performance Comparison**: Benchmarks hardware acceleration against CPU methods
-
-- **Hardware Acceleration**: Dedicated Verilog modules for 2x2, 3x3, and 4x4 matrix multiplication## 🚀 Features## Architecture Overview
-
-## Architecture
+- **Hardware Acceleration**: Dedicated Verilog modules for 2x2, 3x3, and 4x4 matrix multiplicationThe accelerator consists of the following key components:
 
 - **Scalable Processing**: Support for matrix sizes from 2x2 to 8x8
 
-### Processing Elements
+- **Intelligent Scheduling**: Automatic routing to optimal processing method### 1. MAC Unit (`mac_unit.v`)
 
-- `matrix_mult_2x2_simple.v`: Hardware accelerator for 2x2 matrices- **Intelligent Scheduling**: Automatic routing to optimal processing method
+- **Modern Web Interface**: Professional UI with responsive design- **Purpose**: Multiply-Accumulate operations (result = accumulator + a × b)
 
-- `matrix_mult_3x3.v`: Hardware accelerator for 3x3 matrices  
+- **Real-time Computation**: Instant matrix multiplication with verification- **Features**: 
 
-- `matrix_mult_4x4.v`: Hardware accelerator for 4x4 matrices- **Modern Web Interface**: Professional UI with responsive design
+  - 16-bit signed input data
 
+## 🏗️ Architecture  - 32-bit accumulator for overflow protection
 
+  - Clear accumulator functionality
 
-### Web Application- **Real-time Computation**: Instant matrix multiplication with verification- **Hardware Acceleration**: Dedicated Verilog modules for 2x2, 3x3, and 4x4 matrix multiplicationThe accelerator consists of the following key components:
+### Processing Elements  - Valid output signal
 
-- `app_enhanced.py`: Flask backend with intelligent scheduler and CPU benchmarking
+- `matrix_mult_2x2_simple.v`: Hardware accelerator for 2x2 matrices
 
-- `templates/index_enhanced.html`: Modern responsive frontend with performance visualization- **CPU Performance Comparison**: Benchmarks hardware acceleration against CPU methods
+- `matrix_mult_3x3.v`: Hardware accelerator for 3x3 matrices  ### 2. Processing Element (`processing_element.v`)
 
+- `matrix_mult_4x4.v`: Hardware accelerator for 4x4 matrices- **Purpose**: Wrapper around MAC unit for systolic array implementation
 
+- **Features**:
 
-### Design Philosophy- **Scalable Processing**: Support for matrix sizes from 2x2 to 8x8
+### Web Application  - Pass-through inputs for systolic data flow
 
-- **2x2-4x4**: Hardware-accelerated using dedicated Verilog modules
+- `app_enhanced.py`: Flask backend with intelligent scheduler  - Individual MAC unit per PE
 
-- **5x5-8x8**: Optimized software computation for larger matrices## 🏗️ Architecture
+- `templates/index_enhanced.html`: Modern responsive frontend  - Enable and clear controls
 
-- **Verification**: NumPy-based result validation
 
-- **Performance Analysis**: Real-time comparison between hardware and CPU methods- **Intelligent Scheduling**: Automatic routing to optimal processing method### 1. MAC Unit (`mac_unit.v`)
 
+### Design Philosophy### 3. Matrix Multiplication Units
 
+- **2x2-4x4**: Hardware-accelerated using dedicated Verilog modules- **`matrix_mult_2x2.v`**: 4 PEs for 2×2 matrices
 
-## Installation### Processing Elements
+- **5x5-8x8**: Optimized software computation for larger matrices- **`matrix_mult_4x4.v`**: 16 PEs for 4×4 matrices  
 
+- **Verification**: NumPy-based result validation- **`matrix_mult_6x6.v`**: 36 PEs for 6×6 matrices
 
+- **`matrix_mult_8x8.v`**: 64 PEs for 8×8 matrices
 
-1. **Install Dependencies**:- `matrix_mult_2x2_simple.v`: Hardware accelerator for 2x2 matrices- **Modern Web Interface**: Professional UI with responsive design- **Purpose**: Multiply-Accumulate operations (result = accumulator + a × b)
+## 🔧 Installation
 
-   ```bash
+Each unit implements a state machine with:
 
-   pip install -r requirements.txt- `matrix_mult_3x3.v`: Hardware accelerator for 3x3 matrices  
+1. **Install Dependencies**:- IDLE: Wait for start signal
 
-   ```
+   ```bash- CLEAR: Reset all accumulators
 
-- `matrix_mult_4x4.v`: Hardware accelerator for 4x4 matrices- **Real-time Computation**: Instant matrix multiplication with verification- **Features**: 
+   pip install -r requirements.txt- COMPUTE: Perform matrix multiplication cycles
 
-2. **Install Verilog Simulator**:
+   ```- DONE: Output results
 
-   ```bash
 
-   sudo apt-get install iverilog
 
-   ```### Web Application  - 16-bit signed input data
+2. **Install Verilog Simulator**:### 4. Memory Controller (`memory_controller.v`)
 
+   ```bash- **Purpose**: Manage input/output matrix storage
 
+   sudo apt-get install iverilog- **Features**:
 
-3. **Compile Hardware Modules**:- `app_enhanced.py`: Flask backend with intelligent scheduler and CPU benchmarking
+   ```  - Separate storage for matrices A, B, and result C
 
-   ```bash
+  - Dual-port access (external + internal)
 
-   make compile- `templates/index_enhanced.html`: Modern responsive frontend with performance visualization## 🏗️ Architecture  - 32-bit accumulator for overflow protection
-
-   ```
-
-
-
-## Usage
-
-### Design Philosophy  - Clear accumulator functionality
-
-1. **Start the Web Server**:
-
-   ```bash- **2x2-4x4**: Hardware-accelerated using dedicated Verilog modules
-
-   python app_enhanced.py
-
-   ```- **5x5-8x8**: Optimized software computation for larger matrices### Processing Elements  - Valid output signal
-
-
-
-2. **Access the Interface**:- **Verification**: NumPy-based result validation
-
-   Open `http://localhost:5001` in your browser
-
-- **Performance Analysis**: Real-time comparison between hardware and CPU methods- `matrix_mult_2x2_simple.v`: Hardware accelerator for 2x2 matrices
-
-3. **Perform Matrix Multiplication**:
-
-   - Select matrix size (2x2 to 8x8)
-
-   - Input matrix values or use defaults
-
-   - Click "Accelerate" for instant results with performance comparison## 🔧 Installation- `matrix_mult_3x3.v`: Hardware accelerator for 3x3 matrices  ### 2. Processing Element (`processing_element.v`)
-
-
-
-## UI Design
-
-
-
-Modern professional interface featuring:1. **Install Dependencies**:- `matrix_mult_4x4.v`: Hardware accelerator for 4x4 matrices- **Purpose**: Wrapper around MAC unit for systolic array implementation
-
-- **White** backgrounds for clarity
-
-- **Charcoal Black** text for readability   ```bash
-
-- **Orange** accents for interactive elements
-
-- Responsive grid layouts   pip install -r requirements.txt- **Features**:
-
-- Real-time performance charts
-
-- CPU vs Hardware comparison visualization   ```
-
-
-
-## Technical Specifications### Web Application  - Pass-through inputs for systolic data flow
-
-
-
-- **Language**: Verilog HDL (IEEE Standard Compatible)2. **Install Verilog Simulator**:
-
-- **Simulator**: Icarus Verilog (iverilog)
-
-- **Backend**: Flask Python Framework   ```bash- `app_enhanced.py`: Flask backend with intelligent scheduler  - Individual MAC unit per PE
-
-- **Frontend**: HTML5, CSS3, JavaScript
-
-- **Verification**: NumPy Mathematical Libraries   sudo apt-get install iverilog
-
-- **Performance Analysis**: Real-time CPU benchmarking
-
-   ```- `templates/index_enhanced.html`: Modern responsive frontend  - Enable and clear controls
-
-## Project Structure
-
-
-
-```
-
-MiniGPU/3. **Compile Hardware Modules**:
-
-├── matrix_mult_2x2_simple.v    # 2x2 Hardware Accelerator
-
-├── matrix_mult_3x3.v           # 3x3 Hardware Accelerator   ```bash
-
-├── matrix_mult_4x4.v           # 4x4 Hardware Accelerator
-
-├── app_enhanced.py             # Flask Application with CPU Comparison   make compile### Design Philosophy### 3. Matrix Multiplication Units
-
-├── templates/
-
-│   └── index_enhanced.html     # Web Interface with Performance Charts   ```
-
-├── requirements.txt            # Python Dependencies
-
-├── Makefile                    # Build Configuration- **2x2-4x4**: Hardware-accelerated using dedicated Verilog modules- **`matrix_mult_2x2.v`**: 4 PEs for 2×2 matrices
-
-└── README.md                   # Documentation
-
-```## 🎯 Usage
-
-
-
-## Performance Analysis- **5x5-8x8**: Optimized software computation for larger matrices- **`matrix_mult_4x4.v`**: 16 PEs for 4×4 matrices  
-
-
-
-- **Hardware Acceleration**: Parallel processing for small matrices1. **Start the Web Server**:
-
-- **CPU Comparison**: Real-time benchmarking against naive and optimized CPU methods
-
-- **Performance Visualization**: Interactive charts showing execution time comparison   ```bash- **Verification**: NumPy-based result validation- **`matrix_mult_6x6.v`**: 36 PEs for 6×6 matrices
-
-- **Speedup Metrics**: Quantified performance gains with detailed analysis
-
-- **Educational Value**: Demonstrates simulation overhead vs real hardware benefits   python app_enhanced.py
-
-
-
-## Getting Started   ```- **`matrix_mult_8x8.v`**: 64 PEs for 8×8 matrices
-
-
-
-The system is ready to use immediately after installation. The web interface provides intuitive controls for matrix input and instant computation results with comprehensive performance analysis.
-
-
-
-## Performance Features2. **Access the Interface**:## 🔧 Installation
-
-
-
-- **CPU Naive Benchmark**: Standard O(n³) matrix multiplication timing   Open `http://localhost:5001` in your browser
-
-- **CPU Optimized Benchmark**: NumPy vectorized operations timing  
-
-- **Hardware Simulation**: Verilog HDL parallel processing timingEach unit implements a state machine with:
-
-- **Speedup Analysis**: Comparative performance metrics
-
-- **Visual Charts**: Interactive performance comparison graphs3. **Perform Matrix Multiplication**:
-
-
-
----   - Select matrix size (2x2 to 8x8)1. **Install Dependencies**:- IDLE: Wait for start signal
-
-
-
-*MiniGPU Matrix Acceleration Engine - Bridging hardware acceleration with modern web interfaces and performance analysis*   - Input matrix values or use defaults
-
-   - Click "Accelerate" for instant results with performance comparison   ```bash- CLEAR: Reset all accumulators
-
-
-
-## 🎨 UI Design   pip install -r requirements.txt- COMPUTE: Perform matrix multiplication cycles
-
-
-
-Modern professional interface featuring:   ```- DONE: Output results
-
-- **White** backgrounds for clarity
-
-- **Charcoal Black** text for readability
-
-- **Orange** accents for interactive elements
-
-- Responsive grid layouts2. **Install Verilog Simulator**:### 4. Memory Controller (`memory_controller.v`)
-
-- Real-time performance charts
-
-- CPU vs Hardware comparison visualization   ```bash- **Purpose**: Manage input/output matrix storage
-
-
-
-## 🧪 Technical Specifications   sudo apt-get install iverilog- **Features**:
-
-
-
-- **Language**: Verilog HDL (IEEE Standard Compatible)   ```  - Separate storage for matrices A, B, and result C
-
-- **Simulator**: Icarus Verilog (iverilog)
-
-- **Backend**: Flask Python Framework  - Dual-port access (external + internal)
-
-- **Frontend**: HTML5, CSS3, JavaScript
-
-- **Verification**: NumPy Mathematical Libraries3. **Compile Hardware Modules**:  - Configurable addressing
-
-- **Performance Analysis**: Real-time CPU benchmarking
+3. **Compile Hardware Modules**:  - Configurable addressing
 
    ```bash  - Result storage with extended precision
 
-## 📁 Project Structure
-
    make compile
 
-```
+   ```### 5. Matrix Scheduler (`matrix_scheduler.v`)
 
-MiniGPU/   ```### 5. Matrix Scheduler (`matrix_scheduler.v`)
+- **Purpose**: Coordinate computation based on matrix size
 
-├── matrix_mult_2x2_simple.v    # 2x2 Hardware Accelerator
+## 🎯 Usage- **Features**:
 
-├── matrix_mult_3x3.v           # 3x3 Hardware Accelerator- **Purpose**: Coordinate computation based on matrix size
+  - Automatic PE array selection (2×2, 4×4, 6×6, 8×8)
 
-├── matrix_mult_4x4.v           # 4x4 Hardware Accelerator
+1. **Start the Web Server**:  - State machine for computation flow
 
-├── app_enhanced.py             # Flask Application with CPU Comparison## 🎯 Usage- **Features**:
+   ```bash  - Memory interface management
 
-├── templates/
+   python app_enhanced.py  - Result collection and storage
 
-│   └── index_enhanced.html     # Web Interface with Performance Charts  - Automatic PE array selection (2×2, 4×4, 6×6, 8×8)
+   ```
 
-├── requirements.txt            # Python Dependencies
+### 6. Top-Level Integration (`matrix_accelerator.v`)
 
-├── Makefile                    # Build Configuration1. **Start the Web Server**:  - State machine for computation flow
+2. **Access the Interface**:- **Purpose**: Complete system integration
 
-└── README.md                   # Documentation
+   Open `http://localhost:5000` in your browser- **Features**:
 
-```   ```bash  - Memory interface management
+  - All component instantiation
 
+3. **Perform Matrix Multiplication**:  - Signal routing and multiplexing
 
+   - Select matrix size (2x2 to 8x8)  - External interface provision
 
-## 🔬 Performance Analysis   python app_enhanced.py  - Result collection and storage
+   - Input matrix values or use defaults  - Unified control interface
 
+   - Click "Calculate" for instant results
 
+## Usage Instructions
 
-- **Hardware Acceleration**: Parallel processing for small matrices   ```
-
-- **CPU Comparison**: Real-time benchmarking against naive and optimized CPU methods
-
-- **Performance Visualization**: Interactive charts showing execution time comparison### 6. Top-Level Integration (`matrix_accelerator.v`)
-
-- **Speedup Metrics**: Quantified performance gains with detailed analysis
-
-- **Educational Value**: Demonstrates simulation overhead vs real hardware benefits2. **Access the Interface**:- **Purpose**: Complete system integration
-
-
-
-## 🚀 Getting Started   Open `http://localhost:5000` in your browser- **Features**:
-
-
-
-The system is ready to use immediately after installation. The web interface provides intuitive controls for matrix input and instant computation results with comprehensive performance analysis.  - All component instantiation
-
-
-
-## 📊 Performance Features3. **Perform Matrix Multiplication**:  - Signal routing and multiplexing
-
-
-
-- **CPU Naive Benchmark**: Standard O(n³) matrix multiplication timing   - Select matrix size (2x2 to 8x8)  - External interface provision
-
-- **CPU Optimized Benchmark**: NumPy vectorized operations timing  
-
-- **Hardware Simulation**: Verilog HDL parallel processing timing   - Input matrix values or use defaults  - Unified control interface
-
-- **Speedup Analysis**: Comparative performance metrics
-
-- **Visual Charts**: Interactive performance comparison graphs   - Click "Calculate" for instant results
-
-
-
----## Usage Instructions
-
-
-
-*MiniGPU Matrix Acceleration Engine - Bridging hardware acceleration with modern web interfaces and performance analysis*## 🎨 UI Design
+## 🎨 UI Design
 
 ### 1. Loading Input Matrices
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Matrix Multiplication Accelerator</title>
+    <title>Matrix Multiplication Accelerator</title>
     <style>
         * {
             margin: 0;
@@ -11,69 +11,153 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+        :root {
+            --primary-color: #007AFF;
+            --primary-light: #4A90E2;
+            --secondary-color: #34C759;
+            --bg-primary: #F2F2F7;
+            --bg-secondary: #FFFFFF;
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --border-color: #D1D1D6;
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --border-radius: 12px;
+            --border-radius-lg: 16px;
         }
 
-        .container {
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-widthl: 1400px;
-            width: 100%;
-            border: 2px solid #ff6b35;
-            min-height: 90vh;
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 0.5px solid var(--border-color);
+            padding: 2rem 0;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
         }
 
         h1 {
-            text-align: center;
-            color: #2c2c2c;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(255, 107, 53, 0.3);
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            letter-spacing: -0.02em;
         }
 
         .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 1.1em;
-            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            font-weight: 400;
+            margin-top: 0.5rem;
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .control-section {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            border: 0.5px solid var(--border-color);
+            padding: 2rem;
+            margin-bottom: 2rem;
         }
 
         .size-selector {
-            text-align: center;
-            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
 
-        .size-selector label {
-            font-weight: 600;
-            color: #2c2c2c;
-            margin-right: 10px;
+        .size-selector-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 1rem;
         }
 
         .size-selector select {
-            padding: 8px 15px;
-            border: 2px solid #ff6b35;
-            border-radius: 8px;
-            font-size: 16px;
-            background: white;
-            color: #2c2c2c;
-            font-weight: 500;
+            padding: 1rem 1.25rem;
+            border: 0.5px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 400;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            min-width: 160px;
+            font-family: 'Outfit', sans-serif;
         }
 
         .size-selector select:focus {
             outline: none;
-            border-color: #ff6b35;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+        }
+
+        .size-selector select:hover {
+            border-color: var(--primary-light);
+        }
+
+        .matrices-section {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            border: 0.5px solid var(--border-color);
+            padding: 3rem;
+            margin-bottom: 2rem;
         }
 
         .matrices-container {
@@ -81,261 +165,310 @@
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 30px;
-            gap: 15px;
-            overflow-x: auto;
-            padding: 10px;
+            gap: 3rem;
         }
 
         .matrix-section {
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
         }
 
         .matrix-label {
-            font-weight: 700;
-            color: #2c2c2c;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+            border: 0.5px solid var(--border-color);
         }
 
         .matrix {
             display: grid;
-            gap: 5px;
-            margin: 0 auto;
-            padding: 15px;
-            background: #f8f8f8;
-            border-radius: 12px;
-            border: 2px solid #ff6b35;
-            min-width: fit-content;
+            gap: 0.375rem;
+            padding: 1.5rem;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+            border: 0.5px solid var(--border-color);
         }
 
         .matrix input {
-            width: 45px;
-            height: 45px;
+            width: 3rem;
+            height: 3rem;
             text-align: center;
-            border: 2px solid #2c2c2c;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            background: white;
-            color: #2c2c2c;
+            border: 0.5px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 400;
+            transition: all 0.15s ease;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
         }
 
         /* Responsive matrix sizing */
-        .matrix[data-size="2"] input { width: 50px; height: 50px; font-size: 14px; }
-        .matrix[data-size="3"] input { width: 45px; height: 45px; font-size: 13px; }
-        .matrix[data-size="4"] input { width: 40px; height: 40px; font-size: 12px; }
-        .matrix[data-size="5"] input { width: 36px; height: 36px; font-size: 11px; }
-        .matrix[data-size="6"] input { width: 32px; height: 32px; font-size: 10px; }
-        .matrix[data-size="7"] input { width: 30px; height: 30px; font-size: 10px; }
-        .matrix[data-size="8"] input { width: 28px; height: 28px; font-size: 9px; }
+        .matrix[data-size="2"] input { width: 3.5rem; height: 3.5rem; font-size: 1rem; }
+        .matrix[data-size="3"] input { width: 3rem; height: 3rem; font-size: 0.875rem; }
+        .matrix[data-size="4"] input { width: 2.75rem; height: 2.75rem; font-size: 0.8125rem; }
+        .matrix[data-size="5"] input { width: 2.5rem; height: 2.5rem; font-size: 0.75rem; }
+        .matrix[data-size="6"] input { width: 2.25rem; height: 2.25rem; font-size: 0.75rem; }
+        .matrix[data-size="7"] input { width: 2rem; height: 2rem; font-size: 0.6875rem; }
+        .matrix[data-size="8"] input { width: 1.875rem; height: 1.875rem; font-size: 0.625rem; }
 
-        .matrix[data-size="2"] { gap: 8px; max-width: 150px; }
-        .matrix[data-size="3"] { gap: 6px; max-width: 180px; }
-        .matrix[data-size="4"] { gap: 5px; max-width: 220px; }
-        .matrix[data-size="5"] { gap: 4px; max-width: 240px; }
-        .matrix[data-size="6"] { gap: 3px; max-width: 260px; }
-        .matrix[data-size="7"] { gap: 3px; max-width: 280px; }
-        .matrix[data-size="8"] { gap: 2px; max-width: 300px; }
+        .matrix[data-size="2"] { gap: 0.5rem; }
+        .matrix[data-size="3"] { gap: 0.375rem; }
+        .matrix[data-size="4"] { gap: 0.25rem; }
+        .matrix[data-size="5"] { gap: 0.25rem; }
+        .matrix[data-size="6"] { gap: 0.1875rem; }
+        .matrix[data-size="7"] { gap: 0.1875rem; }
+        .matrix[data-size="8"] { gap: 0.125rem; }
 
         .matrix input:focus {
-            border-color: #ff6b35;
+            border-color: var(--primary-color);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
-            transform: scale(1.05);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+        }
+
+        .matrix input:hover {
+            border-color: var(--primary-light);
         }
 
         .operator {
-            font-size: 3em;
-            color: #ff6b35;
-            font-weight: bold;
+            font-size: 2.5rem;
+            color: var(--text-secondary);
+            font-weight: 300;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-shadow: 2px 2px 4px rgba(44, 44, 44, 0.3);
+            padding: 1.5rem;
         }
 
         .controls {
-            text-align: center;
-            margin: 30px 0;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .btn {
-            background: linear-gradient(135deg, #ff6b35 0%, #ff8a5b 100%);
-            color: white;
-            border: 2px solid #2c2c2c;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 1.1em;
-            font-weight: 700;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 0.5px solid var(--border-color);
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 8px rgba(44, 44, 44, 0.2);
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Outfit', sans-serif;
+            min-width: 140px;
+            justify-content: center;
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 24px rgba(255, 107, 53, 0.4);
-            background: linear-gradient(135deg, #ff8a5b 0%, #ff6b35 100%);
-            border-color: #ff6b35;
+            background: var(--bg-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn.btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .btn.btn-primary:hover {
+            background: var(--primary-light);
+            border-color: var(--primary-light);
         }
 
         .btn:active {
-            transform: translateY(-1px);
+            transform: translateY(0);
         }
 
         .btn:disabled {
-            opacity: 0.6;
+            opacity: 0.4;
             cursor: not-allowed;
             transform: none;
         }
 
         .result-section {
-            margin-top: 40px;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            border: 0.5px solid var(--border-color);
+            padding: 3rem;
+            margin-bottom: 2rem;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .result-header {
             text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .result-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
         }
 
         .result-matrix {
             display: grid;
-            gap: 8px;
-            margin: 20px auto;
-            max-width: 300px;
+            gap: 0.5rem;
+            margin: 0 auto;
+            max-width: fit-content;
+            padding: 2rem;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+            border: 0.5px solid var(--border-color);
         }
 
         .result-matrix .cell {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
-            color: white;
+            min-width: 3.5rem;
+            height: 3.5rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 16px;
-            animation: fadeIn 0.5s ease;
-            border: 2px solid #ff6b35;
-            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.2);
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 1rem;
+            animation: fadeIn 0.6s ease;
+            border: 0.5px solid var(--border-color);
+            font-family: 'Outfit', sans-serif;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8) rotate(-5deg); }
-            to { opacity: 1; transform: scale(1) rotate(0deg); }
-        }
-
-        .result-section {
-            animation: slideUp 0.6s ease-out;
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .steps-section {
-            margin-top: 30px;
-            padding: 25px;
-            background: #f8f8f8;
-            border-radius: 15px;
-            text-align: left;
-            border: 2px solid #2c2c2c;
+        .performance-container {
+            margin-top: 3rem;
         }
 
-        .steps-title {
-            font-weight: 700;
-            color: #2c2c2c;
-            margin-bottom: 15px;
+        .performance-section {
+            background: var(--bg-primary);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            border: 0.5px solid var(--border-color);
+        }
+
+        .performance-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            font-size: 1.25rem;
             text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .step {
-            margin: 12px 0;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            border-left: 5px solid #ff6b35;
-            box-shadow: 0 2px 4px rgba(44, 44, 44, 0.1);
-            color: #2c2c2c;
-            font-weight: 500;
-        }
-
-        .performance-chart {
-            margin-top: 30px;
-            padding: 25px;
-            background: #f8f8f8;
-            border-radius: 15px;
-            text-align: center;
-            border: 2px solid #2c2c2c;
         }
 
         .chart-bar {
             display: flex;
             align-items: center;
-            margin: 10px 0;
-            padding: 8px;
-            border-radius: 8px;
-            position: relative;
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            background: var(--bg-secondary);
+            border: 0.5px solid var(--border-color);
         }
 
         .chart-label {
-            width: 120px;
-            text-align: right;
-            margin-right: 15px;
-            font-weight: 600;
-            color: #2c2c2c;
+            min-width: 140px;
+            text-align: left;
+            margin-right: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
         }
 
         .chart-value {
-            background: linear-gradient(135deg, #ff6b35 0%, #ff8a5b 100%);
-            height: 25px;
-            border-radius: 12px;
+            background: var(--primary-color);
+            height: 2rem;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding: 0 10px;
+            padding: 0 1rem;
             color: white;
-            font-weight: bold;
-            font-size: 12px;
-            min-width: 60px;
-            box-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
+            font-weight: 500;
+            font-size: 0.875rem;
+            min-width: 80px;
+            font-family: 'Outfit', sans-serif;
         }
 
         .performance-info {
-            margin-top: 20px;
-            padding: 20px;
-            background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
-            color: white;
-            border-radius: 15px;
-            text-align: center;
-            border: 3px solid #ff6b35;
-            box-shadow: 0 6px 12px rgba(255, 107, 53, 0.3);
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            border: 0.5px solid var(--border-color);
+            margin-top: 1.5rem;
+        }
+
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .metric-group {
+            background: var(--bg-primary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border: 0.5px solid var(--border-color);
+        }
+
+        .metric-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .metric-value {
+            color: var(--text-secondary);
+            font-family: 'Outfit', monospace;
+            font-weight: 400;
+            line-height: 1.6;
         }
 
         .loading {
             display: none;
             text-align: center;
-            color: #ff6b35;
-            font-weight: 700;
-            font-size: 1.1em;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            border: 0.5px solid var(--border-color);
+            padding: 3rem;
+            margin-bottom: 2rem;
         }
 
         .spinner {
-            border: 4px solid #2c2c2c;
-            border-top: 4px solid #ff6b35;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 2.5rem;
+            height: 2.5rem;
             animation: spin 1s linear infinite;
-            margin: 15px auto;
-            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+            margin: 0 auto 1.5rem;
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-weight: 400;
+            font-size: 1.125rem;
         }
 
         @keyframes spin {
@@ -343,136 +476,195 @@
             100% { transform: rotate(360deg); }
         }
 
-        .error {
-            color: #ffffff;
-            background: #e74c3c;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-            border: 2px solid #2c2c2c;
-            font-weight: 600;
-            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            font-weight: 500;
+            border: 1px solid;
         }
 
-        .success {
-            color: #ffffff;
-            background: #ff6b35;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-            border: 2px solid #2c2c2c;
-            font-weight: 600;
-            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+        .alert-error {
+            color: #dc2626;
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .alert-success {
+            color: #059669;
+            background: #ecfdf5;
+            border-color: #a7f3d0;
         }
 
         @media (max-width: 1024px) {
-            .container {
-                padding: 20px;
-                max-width: 95%;
+            .main-content {
+                padding: 1.5rem;
             }
             
             .matrices-container {
                 flex-direction: column;
-                gap: 20px;
+                gap: 1.5rem;
             }
             
             .operator {
                 transform: rotate(90deg);
-                font-size: 2em;
-                margin: 10px 0;
+                font-size: 1.5rem;
+                margin: 0.5rem 0;
             }
             
-            /* Adjust matrix sizes for smaller screens */
-            .matrix[data-size="5"] input { width: 32px; height: 32px; }
-            .matrix[data-size="6"] input { width: 28px; height: 28px; }
-            .matrix[data-size="7"] input { width: 26px; height: 26px; }
-            .matrix[data-size="8"] input { width: 24px; height: 24px; }
+            .performance-metrics {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
+            .header-content {
+                padding: 0 1rem;
             }
             
             h1 {
-                font-size: 2em;
+                font-size: 1.75rem;
             }
             
-            .matrix[data-size="6"] input { width: 26px; height: 26px; font-size: 9px; }
-            .matrix[data-size="7"] input { width: 24px; height: 24px; font-size: 8px; }
-            .matrix[data-size="8"] input { width: 22px; height: 22px; font-size: 8px; }
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .control-section, .matrices-section, .result-section {
+                padding: 1rem;
+            }
+            
+            .size-selector {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            
+            .size-selector select {
+                min-width: auto;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
             
             .btn {
-                padding: 12px 20px;
-                font-size: 0.9em;
-                margin: 5px;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* Smaller matrix inputs on mobile */
+            .matrix[data-size="6"] input { width: 2rem; height: 2rem; font-size: 0.6875rem; }
+            .matrix[data-size="7"] input { width: 1.75rem; height: 1.75rem; font-size: 0.625rem; }
+            .matrix[data-size="8"] input { width: 1.5rem; height: 1.5rem; font-size: 0.5625rem; }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                padding: 0 0.75rem;
+            }
+            
+            .main-content {
+                padding: 0.75rem;
+            }
+            
+            .logo {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .subtitle {
+                font-size: 0.875rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>⚡ Matrix Acceleration Engine</h1>
-        <p class="subtitle">Professional Verilog HDL-powered matrix multiplication with scalable processing elements</p>
-
-        <div class="size-selector">
-            <label for="matrixSize">Matrix Size:</label>
-            <select id="matrixSize" onchange="updateMatrixSize()">
-                <option value="2">2×2</option>
-                <option value="3">3×3</option>
-                <option value="4">4×4</option>
-                <option value="5">5×5</option>
-                <option value="6">6×6</option>
-                <option value="7">7×7</option>
-                <option value="8">8×8</option>
-            </select>
-        </div>
-
-        <div class="matrices-container">
-            <div class="matrix-section">
-                <div class="matrix-label">Matrix A</div>
-                <div id="matrixA" class="matrix"></div>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">M</div>
+                    <div>
+                        <h1>Matrix Accelerator</h1>
+                        <p class="subtitle">High-performance matrix multiplication with hardware acceleration</p>
+                    </div>
+                </div>
             </div>
-            
-            <div class="operator">×</div>
-            
-            <div class="matrix-section">
-                <div class="matrix-label">Matrix B</div>
-                <div id="matrixB" class="matrix"></div>
-            </div>
-        </div>
+        </header>
 
-        <div class="controls">
-            <button class="btn" onclick="fillRandom()">🎲 Random Fill</button>
-            <button class="btn" onclick="clearMatrices()">🧹 Clear</button>
-            <button class="btn" onclick="calculateMultiplication()" id="calculateBtn">⚡ Accelerate</button>
-        </div>
+        <main class="main-content">
+            <div class="control-section">
+                <div class="size-selector">
+                    <span class="size-selector-label">Matrix Size</span>
+                    <select id="matrixSize" onchange="updateMatrixSize()">
+                        <option value="2">2×2 Matrix</option>
+                        <option value="3">3×3 Matrix</option>
+                        <option value="4">4×4 Matrix</option>
+                        <option value="5">5×5 Matrix</option>
+                        <option value="6">6×6 Matrix</option>
+                        <option value="7">7×7 Matrix</option>
+                        <option value="8">8×8 Matrix</option>
+                    </select>
+                </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <div>Processing matrices with Verilog HDL accelerator...</div>
-        </div>
+                <div class="controls">
+                    <button class="btn" onclick="fillRandom()">
+                        Random Fill
+                    </button>
+                    <button class="btn" onclick="clearMatrices()">
+                        Clear All
+                    </button>
+                    <button class="btn btn-primary" onclick="calculateMultiplication()" id="calculateBtn">
+                        Calculate
+                    </button>
+                </div>
+            </div>
 
-        <div id="result-section" class="result-section" style="display: none;">
-            <h2>Result Matrix C = A × B</h2>
-            <div id="resultMatrix" class="result-matrix"></div>
-            
-            <div id="steps" class="steps-section">
-                <div class="steps-title">📋 Execution Steps</div>
-                <div id="stepsList"></div>
+            <div class="matrices-section">
+                <div class="matrices-container">
+                    <div class="matrix-section">
+                        <div class="matrix-label">Matrix A</div>
+                        <div id="matrixA" class="matrix"></div>
+                    </div>
+                    
+                    <div class="operator">×</div>
+                    
+                    <div class="matrix-section">
+                        <div class="matrix-label">Matrix B</div>
+                        <div id="matrixB" class="matrix"></div>
+                    </div>
+                </div>
             </div>
-            
-            <div id="performance-chart" class="performance-chart" style="display: none;">
-                <div class="steps-title">📊 Performance Comparison Chart</div>
-                <div id="chartContainer"></div>
-            </div>
-            
-            <div id="performance" class="performance-info">
-                <div id="performanceDetails"></div>
-            </div>
-        </div>
 
-        <div id="error-message" class="error" style="display: none;"></div>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div class="loading-text">Processing matrices with hardware acceleration...</div>
+            </div>
+
+            <div id="result-section" class="result-section" style="display: none;">
+                <div class="result-header">
+                    <div class="result-title">Result Matrix C = A × B</div>
+                </div>
+                <div id="resultMatrix" class="result-matrix"></div>
+                
+                <div class="performance-container">
+                    <div class="performance-section">
+                        <div class="performance-title">Performance Analysis</div>
+                        <div id="chartContainer"></div>
+                        <div class="performance-info">
+                            <div id="performanceDetails"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="error-message" class="alert alert-error" style="display: none;"></div>
+        </main>
     </div>
 
     <script>
@@ -542,7 +734,6 @@
 
         function hideResult() {
             document.getElementById('result-section').style.display = 'none';
-            document.getElementById('performance-chart').style.display = 'none';
             document.getElementById('error-message').style.display = 'none';
         }
 
@@ -550,6 +741,7 @@
             const errorDiv = document.getElementById('error-message');
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function showLoading(show) {
@@ -609,16 +801,6 @@
                 });
             });
 
-            // Display steps
-            const stepsList = document.getElementById('stepsList');
-            stepsList.innerHTML = '';
-            data.steps.forEach(step => {
-                const stepDiv = document.createElement('div');
-                stepDiv.className = 'step';
-                stepDiv.textContent = step;
-                stepsList.appendChild(stepDiv);
-            });
-
             // Display performance info with CPU comparison
             const perfDiv = document.getElementById('performanceDetails');
             const perf = data.performance;
@@ -632,85 +814,112 @@
                 parallel_efficiency: 'Unknown'
             };
             
-            let speedupColor = 'white';
-            let speedupIcon = '⚡';
+            // Determine performance analysis based on actual speedup
             let performanceAnalysis = '';
             
-            if (cpu.speedup_vs_naive > 1) {
-                speedupColor = '#4CAF50'; // Green for speedup
-                speedupIcon = '🚀';
-                performanceAnalysis = 'Hardware acceleration provides performance gain';
-            } else if (cpu.speedup_vs_naive > 0.1) {
-                speedupColor = '#FF9800'; // Orange for close performance
-                speedupIcon = '⚖️';
-                performanceAnalysis = 'Hardware and CPU performance are comparable';
+            if (cpu.speedup_vs_naive >= 10) {
+                performanceAnalysis = 'Hardware provides significant performance advantage through parallel processing';
+            } else if (cpu.speedup_vs_naive >= 2) {
+                performanceAnalysis = 'Hardware acceleration demonstrates clear performance benefits';
+            } else if (cpu.speedup_vs_optimized >= 1) {
+                performanceAnalysis = 'Hardware matches or exceeds optimized CPU performance';
             } else {
-                speedupColor = '#3498db'; // Blue for educational/simulation overhead
-                speedupIcon = '🔬';
-                performanceAnalysis = 'Simulation overhead affects small matrices - real hardware would be faster';
+                performanceAnalysis = 'Performance varies by matrix size and implementation details';
+            }
+            
+            // Show simulation overhead info for hardware matrices
+            let simulationInfo = '';
+            if (perf.hardware_accelerated && perf.simulation_overhead_ms) {
+                simulationInfo = `
+                    <div class="metric-group" style="margin-top: 0.75rem; background: rgba(59, 130, 246, 0.1);">
+                        <div class="metric-label">Simulation Note</div>
+                        <div class="metric-value">
+                            Actual simulation: ${perf.simulation_overhead_ms.toFixed(2)}ms<br>
+                            Real hardware estimate: ~${cpu.hardware_ms}ms
+                        </div>
+                    </div>
+                `;
             }
             
             perfDiv.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;">
-                    <div>
-                        <strong>⚡ Performance Metrics</strong><br>
-                        Method: ${perf.method}<br>
-                        ${perf.hardware_accelerated ? '🔥 Hardware Accelerated' : '💻 CPU Optimized'}<br>
-                        Matrix Size: ${perf.matrix_size}<br>
-                        Verification: ${data.verification.results_match ? '✅ Passed' : '❌ Failed'}
+                <div class="performance-metrics">
+                    <div class="metric-group">
+                        <div class="metric-label">Performance Metrics</div>
+                        <div class="metric-value">
+                            Method: ${perf.method}<br>
+                            ${perf.hardware_accelerated ? 'Hardware Accelerated' : 'CPU Optimized'}<br>
+                            Matrix Size: ${perf.matrix_size}<br>
+                            Verification: ${data.verification.results_match ? 'Passed' : 'Failed'}
+                        </div>
                     </div>
-                    <div>
-                        <strong>🏁 CPU Comparison</strong><br>
-                        <div style="font-family: monospace; font-size: 0.9em;">
-                        CPU Naive: ${cpu.naive_cpu_ms.toFixed(4)}ms<br>
-                        CPU Optimized: ${cpu.optimized_cpu_ms.toFixed(4)}ms<br>
-                        <span style="color: ${speedupColor}; font-weight: bold;">
-                        ${perf.hardware_accelerated ? 'Hardware' : 'Selected'}: ${cpu.hardware_ms.toFixed(4)}ms
-                        </span>
+                    <div class="metric-group">
+                        <div class="metric-label">Execution Times</div>
+                        <div class="metric-value">
+                            CPU Naive: ${cpu.naive_cpu_ms.toFixed(4)}ms<br>
+                            CPU Optimized: ${cpu.optimized_cpu_ms.toFixed(4)}ms<br>
+                            ${perf.hardware_accelerated ? 'Hardware (Est.)' : 'Selected'}: ${cpu.hardware_ms.toFixed(4)}ms
                         </div>
                     </div>
                 </div>
-                <div style="margin-top: 15px; padding: 10px; background: rgba(255,107,53,0.1); border-radius: 8px; border-left: 4px solid #ff6b35;">
-                    <strong style="color: ${speedupColor};">${speedupIcon} Performance Analysis</strong><br>
-                    <div style="font-size: 0.9em; margin: 5px 0; color: #555;">
-                        ${performanceAnalysis}
+                <div class="metric-group" style="margin-top: 0.75rem; background: rgba(99, 102, 241, 0.1);">
+                    <div class="metric-label">Performance Analysis</div>
+                    <div class="metric-value">
+                        ${performanceAnalysis}<br>
+                        Speedup vs CPU Naive: <strong>${cpu.speedup_vs_naive}x</strong><br>
+                        Speedup vs CPU Optimized: <strong>${cpu.speedup_vs_optimized}x</strong><br>
+                        Architecture: ${cpu.parallel_efficiency}
                     </div>
-                    Speedup vs CPU Naive: <span style="color: ${speedupColor}; font-weight: bold;">${cpu.speedup_vs_naive}x</span><br>
-                    Speedup vs CPU Optimized: <span style="color: ${speedupColor}; font-weight: bold;">${cpu.speedup_vs_optimized}x</span><br>
-                    Architecture: ${cpu.parallel_efficiency}
                 </div>
+                ${simulationInfo}
             `;
 
             // Display performance comparison chart
-            displayPerformanceChart(cpu);
+            displayPerformanceChart(data, cpu);
             
             document.getElementById('result-section').style.display = 'block';
+            document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        function displayPerformanceChart(cpu) {
+        function displayPerformanceChart(data, cpu) {
             const chartContainer = document.getElementById('chartContainer');
-            const maxTime = Math.max(cpu.naive_cpu_ms, cpu.optimized_cpu_ms, cpu.hardware_ms);
             
-            // Create chart bars
-            const methods = [
-                { label: 'CPU Naive', time: cpu.naive_cpu_ms, color: '#e74c3c' },
-                { label: 'CPU Optimized', time: cpu.optimized_cpu_ms, color: '#3498db' },
-                { label: 'Hardware/Selected', time: cpu.hardware_ms, color: '#ff6b35' }
-            ];
+            // For hardware accelerated cases, show both estimated and simulation times
+            const isHardwareAccelerated = data.performance.hardware_accelerated;
+            const simulationTime = data.performance.simulation_overhead_ms;
+            
+            let methods;
+            let maxTime;
+            
+            if (isHardwareAccelerated && simulationTime) {
+                // Show comparison including simulation overhead
+                maxTime = Math.max(cpu.naive_cpu_ms, cpu.optimized_cpu_ms, cpu.hardware_ms, simulationTime);
+                methods = [
+                    { label: 'CPU Naive', time: cpu.naive_cpu_ms, color: '#e74c3c' },
+                    { label: 'CPU Optimized', time: cpu.optimized_cpu_ms, color: '#3498db' },
+                    { label: 'Hardware (Est.)', time: cpu.hardware_ms, color: '#27ae60' },
+                    { label: 'Simulation (Actual)', time: simulationTime, color: '#95a5a6' }
+                ];
+            } else {
+                // Standard comparison
+                maxTime = Math.max(cpu.naive_cpu_ms, cpu.optimized_cpu_ms, cpu.hardware_ms);
+                methods = [
+                    { label: 'CPU Naive', time: cpu.naive_cpu_ms, color: '#e74c3c' },
+                    { label: 'CPU Optimized', time: cpu.optimized_cpu_ms, color: '#3498db' },
+                    { label: 'Hardware/Selected', time: cpu.hardware_ms, color: '#ff6b35' }
+                ];
+            }
             
             chartContainer.innerHTML = methods.map(method => {
-                const width = Math.max((method.time / maxTime) * 400, 30); // Minimum width for visibility
+                const width = Math.max((method.time / maxTime) * 300, 40); // Minimum width for visibility
                 return `
                     <div class="chart-bar">
-                        <div class="chart-label">${method.label}:</div>
-                        <div class="chart-value" style="width: ${width}px; background: ${method.color};">
+                        <div class="chart-label">${method.label}</div>
+                        <div class="chart-value" style="width: ${width}px; background-color: ${method.color};">
                             ${method.time.toFixed(4)}ms
                         </div>
                     </div>
                 `;
             }).join('');
-            
-            document.getElementById('performance-chart').style.display = 'block';
         }
 
         // Initialize on page load
